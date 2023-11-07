@@ -17,37 +17,61 @@ npm install @wert-io/module-react-component
 ## Usage example
 
 ```
-import WertModule from '@wert-io/module-react-component';
+import { useWertWidget } from '@wert-io/module-react-component';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      wertOptions: {
-        partner_id: '{{YOUR_PARTNER_ID}}',
+export default function WidgetButton () {
+    const options = {
+        partner_id: 'default',
         listeners: {
-          loaded: () => console.log('loaded'),
+            loaded: () => console.log('loaded'),
         },
-
-        ...
-
-      },
     };
-  }
 
-  render() {
-    return (
-      <div className="app">
-        <WertModule
-          options={this.state.wertOptions}
-        />
-      </div>
-    );
-  }
+    const { mountWertWidget } = useWertWidget(options);
+
+    return <button onClick={() => mountWertWidget()}>Make A Purchase</button>
 }
 ```
 
-You can find the Whole list of options [here](https://www.npmjs.com/package/@wert-io/widget-initializer#documentation).
+You can find the full list of the options that can be passed to the widget [here](https://www.npmjs.com/package/@wert-io/widget-initializer#documentation).
 
-Component reacts to **options.theme** and **options.color_{name}** values change and ignores others.
+### Events
+
+To get the whole list of available events, you can use a static property `eventTypes`:
+
+```
+  const { eventTypes } = useWertWidget(wertOptions);
+  console.log(eventTypes);
+```
+
+You can read the events descriptions [here](https://www.npmjs.com/package/@wert-io/widget-initializer#listeners).
+
+
+### Methods
+
+| Method                 | Description                   |
+|------------------------|-------------------------------|
+| **mountWertWidget**    | Mounts module in DOM          |
+| **setWertWidgetTheme** | Switches theme without reload |
+
+You can learn how the methods work [here](https://www.npmjs.com/package/@wert-io/widget-initializer#configuration-object-methods).
+
+### Smart Contract Signing Helper
+
+We've added `@wert-io/widget-sc-signer` to simplify the data signing process for executing smart contracts. Just pass the object with the following options as the second argument to the `useWertWidget` function. 
+
+| Field Name      | Data Type | Required   |
+|-----------------|-----------|------------|
+| address         | string    | required   |
+| commodity       | string    | required   |
+| commodity_amount| number    | required   |
+| network         | string    | optional   |
+| sc_address      | string    | required   |
+| sc_input_data   | string    | required   |
+| private_key     | string    | required   |
+
+```
+  const { mountWertWidget } = useWertWidget(wertOptions, smartContractData);
+```
+
+You can find more information on how the signer works [here](https://www.npmjs.com/package/@wert-io/widget-sc-signer).

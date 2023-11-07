@@ -1,72 +1,37 @@
-import * as React from 'react';
-import WertWidget from '@wert-io/widget-initializer';
+import { useRef } from "react";
+import WertWidget from "@wert-io/widget-initializer";
+import generateSignedData from "./generate-signed-data";
+import type { SmartContractOptions } from "./generate-signed-data";
 
-declare type WertPassThroughProps = React.ComponentProps<'div'>;
-declare type WertModuleProps = WertPassThroughProps & {
-  options: WertWidget["options"]
-};
-declare type WertModuleState = {
-  passThroughProps: WertPassThroughProps
-};
+type WidgetOptions = ConstructorParameters<typeof WertWidget>[0];
+type ThemeOptions = Parameters<WertWidget["setTheme"]>[0];
 
-class WertModule extends React.Component<WertModuleProps, WertModuleState> {
-  wertWidget: WertWidget;
+export function useWertWidget(
+  options: WidgetOptions,
+  smartContractOptions?: SmartContractOptions
+) {
+  const wertWidget = useRef<WertWidget | null>(null);
 
-  constructor(props: WertModuleProps) {
-    super(props);
+  const initWidget = () => {
+    if (wertWidget.current) wertWidget.current.destroy();
 
-    const defaultContainerId = 'wert-module';
-    const wertWidget = new WertWidget({
-      container_id: defaultContainerId,
-      ...props.options,
+    wertWidget.current = new WertWidget({
+      ...options,
+      ...(smartContractOptions ? generateSignedData(smartContractOptions) : {}),
     });
-    const passThroughProps = {
-      id: props.options.container_id || defaultContainerId,
-      ...props,
-      options: undefined,
-    } as WertPassThroughProps;
+  };
 
-    this.wertWidget = wertWidget;
-    this.state = {
-      passThroughProps,
-    };
-  }
-
-  componentDidMount() {
-    this.wertWidget.mount();
-  }
-
-  componentDidUpdate(prevProps: WertModuleProps) {
-    const themeChanged = this.props.options.theme !== prevProps.options.theme;
-    const newColors = Object.keys(this.props.options)
-      .filter(key => key.startsWith('color'))
-      .reduce((accum, key) => {
-        const newColor = this.props.options[key];
-        const oldColor = prevProps.options[key];
-
-        if (newColor !== oldColor) {
-          accum[key] = newColor;
-        }
-
-        return accum;
-      }, {});
-    const colorsChanged = !!Object.keys(newColors).length;
-
-    if (themeChanged || colorsChanged) this.wertWidget.setTheme({
-      theme: this.props.options.theme,
-      colors: newColors,
-    });
-  }
-
-  componentWillUnmount() {
-    this.wertWidget.destroy();
-  }
-
-  render() {
-    return (
-      <div {...this.state.passThroughProps} />
-    );
-  }
+  return {
+    mountWertWidget: () => {
+      initWidget();
+      wertWidget.current?.mount();
+    },
+    destroyWertWidget: () => wertWidget.current?.destroy?.(),
+    getEmbedCode: () => wertWidget.current?.getEmbedCode(),
+    setWertWidgetTheme: (themeOptions: ThemeOptions) =>
+      wertWidget.current?.setTheme(themeOptions),
+    eventTypes: WertWidget.eventTypes
+  };
 }
 
-export default WertModule;
+export default useWertWidget;
