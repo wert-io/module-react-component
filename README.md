@@ -1,6 +1,6 @@
 # Wert Module React component
 
-This is a wrapped [Wert initializer helper](https://www.npmjs.com/package/@wert-io/widget-initializer) for React projects.
+This is the wrapped [Wert widget-initializer helper](https://www.npmjs.com/package/@wert-io/widget-initializer) for React projects.
 
 ## Installation
 
@@ -21,38 +21,30 @@ import { useWertWidget } from '@wert-io/module-react-component';
 
 export default function WidgetButton () {
     const options = {
-        partner_id: 'default',
+        partner_id: 'YOUR_PARTNER_ID',
         listeners: {
             loaded: () => console.log('loaded'),
         },
     };
 
-    const { mountWertWidget } = useWertWidget(options);
+    const { open: openWertWidget } = useWertWidget(options);
 
-    return <button onClick={() => mountWertWidget()}>Make A Purchase</button>
+    return <button onClick={() => openWertWidget()}>Make A Purchase</button>
 }
 ```
 
 You can find the full list of the options that can be passed to the widget [here](https://www.npmjs.com/package/@wert-io/widget-initializer#documentation).
 
-### Events
-
-To get the whole list of available events, you can use a static property `eventTypes`:
-
-```
-  const { eventTypes } = useWertWidget(wertOptions);
-  console.log(eventTypes);
-```
-
-You can read the events descriptions [here](https://www.npmjs.com/package/@wert-io/widget-initializer#listeners).
-
 
 ### Methods
 
-| Method                 | Description                   |
-|------------------------|-------------------------------|
-| **mountWertWidget**    | Mounts module in DOM          |
-| **setWertWidgetTheme** | Switches theme without reload |
+| Method                   | Description                               |
+|--------------------------|-------------------------------------------|
+| **open**                 | Mounts module in DOM and makes it visible |
+| **updateTheme**          | Switches the theme without reload         |
+| **addEventListeners**    | Adds event listeners                      |
+| **removeEventListeners** | Removes event listeners                   |
+
 
 You can learn how the methods work [here](https://www.npmjs.com/package/@wert-io/widget-initializer#configuration-object-methods).
 
@@ -65,13 +57,13 @@ We've added `@wert-io/widget-sc-signer` to simplify the data signing process for
 | address         | string    | required   |
 | commodity       | string    | required   |
 | commodity_amount| number    | required   |
-| network         | string    | optional   |
+| network         | string    | required   |
 | sc_address      | string    | required   |
 | sc_input_data   | string    | required   |
 | private_key     | string    | required   |
 
 ```
-  const { mountWertWidget } = useWertWidget(wertOptions, smartContractData);
+  const { open } = useWertWidget(wertOptions, smartContractData);
 ```
 
 You can find more information on how the signer works [here](https://www.npmjs.com/package/@wert-io/widget-sc-signer).

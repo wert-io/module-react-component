@@ -1,14 +1,9 @@
-import { signSmartContractData } from "@wert-io/widget-sc-signer";
+import { signSmartContractData } from '@wert-io/widget-sc-signer';
 type SignSmartContractDataParameters = Parameters<
   typeof signSmartContractData
 >[0];
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-type CorrectSmartContractOptions = PartialBy<
-  SignSmartContractDataParameters,
-  "network"
->;
 
-export type SmartContractOptions = CorrectSmartContractOptions & {
+export type SmartContractOptions = SignSmartContractDataParameters & {
   private_key: string;
 };
 

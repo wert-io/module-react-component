@@ -1,36 +1,49 @@
-import { useRef } from "react";
-import WertWidget from "@wert-io/widget-initializer";
-import generateSignedData from "./generate-signed-data";
-import type { SmartContractOptions } from "./generate-signed-data";
+import WertWidget from '@wert-io/widget-initializer';
+import type {
+  Options,
+  SetThemeParameters,
+  EventTypes,
+} from '@wert-io/widget-initializer/types';
 
-type WidgetOptions = ConstructorParameters<typeof WertWidget>[0];
-type ThemeOptions = Parameters<WertWidget["setTheme"]>[0];
+import generateSignedData from './generate-signed-data';
+import type { SmartContractOptions } from './generate-signed-data';
+
+type RemoveEventListenersParameters =
+  | EventTypes
+  | Array<EventTypes>
+  | undefined;
 
 export function useWertWidget(
-  options: WidgetOptions,
+  options: Options,
   smartContractOptions?: SmartContractOptions
 ) {
-  const wertWidget = useRef<WertWidget | null>(null);
-
-  const initWidget = () => {
-    if (wertWidget.current) wertWidget.current.destroy();
-
-    wertWidget.current = new WertWidget({
-      ...options,
-      ...(smartContractOptions ? generateSignedData(smartContractOptions) : {}),
-    });
-  };
-
+  const wertWidget = new WertWidget({
+    ...options,
+    ...(smartContractOptions ? generateSignedData(smartContractOptions) : {}),
+  });
   return {
-    mountWertWidget: () => {
-      initWidget();
-      wertWidget.current?.mount();
+    open: () => {
+      wertWidget.open();
     },
-    destroyWertWidget: () => wertWidget.current?.destroy?.(),
-    getEmbedCode: () => wertWidget.current?.getEmbedCode(),
-    setWertWidgetTheme: (themeOptions: ThemeOptions) =>
-      wertWidget.current?.setTheme(themeOptions),
-    eventTypes: WertWidget.eventTypes
+    addEventListeners: (listeners: Options['listeners']) => {
+      wertWidget.addEventListeners(listeners);
+    },
+    removeEventListeners: (types: RemoveEventListenersParameters) => {
+      const isEventTypesArray = (
+        types: RemoveEventListenersParameters
+      ): types is Array<EventTypes> => Array.isArray(types);
+
+      if (types === undefined) {
+        wertWidget.removeEventListeners();
+      } else if (isEventTypesArray(types)) {
+        wertWidget.removeEventListeners(types);
+      } else {
+        wertWidget.removeEventListeners(types);
+      }
+    },
+    updateTheme: (theme: SetThemeParameters) => {
+      wertWidget.updateTheme(theme);
+    },
   };
 }
 
