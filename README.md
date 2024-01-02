@@ -15,7 +15,7 @@ npm install @wert-io/module-react-component
 ```
 
 ## Usage example
-The `useWertWidget` hook provides a sindle method for **opening the widget**:
+The `useWertWidget` hook provides a single method for **opening the widget**:
 
 ```
 import { useState } from 'React';
