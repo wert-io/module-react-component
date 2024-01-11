@@ -23,21 +23,22 @@ const reactiveThemeParameters = [
   'color_warning',
   'color_error',
 ] as const;
-type ReactiveThemeParameters = typeof reactiveThemeParameters[number];
-export type StaticOptions = Omit<Options, ReactiveThemeParameters | 'listeners'>
-export type ReactiveOptions = Pick<Options, ReactiveThemeParameters | 'listeners'>
+type ReactiveThemeParameters = (typeof reactiveThemeParameters)[number];
+export type GeneralOptions = Omit<
+  Options,
+  ReactiveThemeParameters | 'listeners'
+>;
+export type ReactiveOptions = Pick<
+  Options,
+  ReactiveThemeParameters | 'listeners'
+>;
 
-export interface WidgetOptions {
-  staticOptions: StaticOptions,
-  reactiveOptions?: ReactiveOptions,
-  smartContractOptions?: SmartContractOptions
+export interface StaticOptions {
+  options: GeneralOptions;
+  smartContractOptions?: SmartContractOptions;
 }
 
-export function useWertWidget({
-  staticOptions,
-  reactiveOptions,
-  smartContractOptions
-}: WidgetOptions) {
+export function useWertWidget(reactiveOptions: ReactiveOptions) {
   const prevOptions = useRef<ReactiveOptions | undefined>(reactiveOptions);
   const wertWidget = useRef<null | InstanceType<typeof WertWidget>>(null);
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
@@ -73,42 +74,62 @@ export function useWertWidget({
   const updateListeners = useCallback((newOptions?: ReactiveOptions) => {
     if (!wertWidget.current) return;
 
-    newOptions?.listeners && wertWidget.current.addEventListeners(newOptions.listeners);
+    newOptions?.listeners &&
+      wertWidget.current.addEventListeners(newOptions.listeners);
 
     if (prevOptions.current?.listeners) {
       const newListeners = newOptions?.listeners || {};
-      const listenersToRemove = Object.keys(prevOptions.current.listeners).filter(
-        (key) => !(key in newListeners)
-      );
+      const listenersToRemove = Object.keys(
+        prevOptions.current.listeners
+      ).filter((key) => !(key in newListeners));
       listenersToRemove.length &&
-        wertWidget.current.removeEventListeners(listenersToRemove as EventTypes[]);
+        wertWidget.current.removeEventListeners(
+          listenersToRemove as EventTypes[]
+        );
     }
+
+    addCloseListener(newOptions?.listeners?.close);
   }, []);
 
-  const updateReactiveOptions = useCallback(
-    (options?: ReactiveOptions) => {
-      updateTheme(options);
-      updateListeners(options);
-      prevOptions.current = options;
-    },
-    []
-  );
+  const updateReactiveOptions = useCallback((options?: ReactiveOptions) => {
+    updateTheme(options);
+    updateListeners(options);
+    prevOptions.current = options;
+  }, []);
+
+  const addCloseListener = useCallback((fn?: (...args: any[]) => any) => {
+    wertWidget.current?.addEventListeners({
+      'close': () => {
+        setIsWidgetOpen(false);
+        fn && fn();
+      }
+    });
+  }, []);
 
   useEffect(() => {
     updateReactiveOptions(reactiveOptions);
   }, [reactiveOptions]);
 
   return {
-    open: () => {
+    open: ({ options, smartContractOptions }: StaticOptions) => {
+      if (isWidgetOpen) {
+        console.error('The Wert widget is already open');
+        return;
+      }
+
       wertWidget.current = new WertWidget({
-        ...staticOptions,
+        ...options,
         ...reactiveOptions,
-        ...(smartContractOptions ? generateSignedData(smartContractOptions) : {}),
+        ...(smartContractOptions
+          ? generateSignedData(smartContractOptions)
+          : {}),
       });
+      addCloseListener(reactiveOptions?.listeners?.close);
       wertWidget.current.open();
+
       setIsWidgetOpen(true);
     },
-    isWidgetOpen
+    isWidgetOpen,
   };
 }
 
