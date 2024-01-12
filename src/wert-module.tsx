@@ -4,9 +4,9 @@ import type {
   Options
 } from '@wert-io/widget-initializer/types';
 
-import generateListeners from './helpers/generate-listeners';
+import { generateListeners } from './helpers/generate-listeners';
 
-import generateSignedData from './helpers/generate-signed-data';
+import { generateSignedData } from './helpers/generate-signed-data';
 import type { SmartContractOptions } from './helpers/generate-signed-data';
 
 import { updateReactiveOptions } from './helpers/update-reactive-options';
@@ -22,7 +22,7 @@ export interface StaticOptions {
   smartContractOptions?: SmartContractOptions;
 }
 
-export function useWertWidget(reactiveOptions: ReactiveOptions) {
+export const useWertWidget = (reactiveOptions: ReactiveOptions) => {
   const prevOptions = useRef<ReactiveOptions | undefined>(reactiveOptions);
   const wertWidget = useRef<InstanceType<typeof WertWidget> | undefined>();
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
@@ -60,7 +60,6 @@ export function useWertWidget(reactiveOptions: ReactiveOptions) {
     },
     isWidgetOpen,
   };
-}
+};
 
-export default useWertWidget;
 export type { SmartContractOptions, ReactiveOptions };

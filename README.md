@@ -75,6 +75,7 @@ We've added `@wert-io/widget-sc-signer` to simplify the data signing process for
 | private_key     | string    | required   |
 
 ```
+import { useWertWidget } from '@wert-io/module-react-component';
 import type { GeneralOptions, SmartContractOptions } from '@wert-io/module-react-component';
 
 // ...

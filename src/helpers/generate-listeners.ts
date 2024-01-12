@@ -5,10 +5,10 @@ interface Props {
   listeners?: Options['listeners'];
 }
 
-export default function generateListeners({
+export const generateListeners = ({
   widgetCallback,
   listeners,
-}: Props) {
+}: Props) => {
   return {
     ...(listeners ? listeners : {}),
     close: () => {
@@ -16,4 +16,4 @@ export default function generateListeners({
       listeners?.close && listeners.close();
     },
   };
-}
+};

@@ -7,9 +7,9 @@ export type SmartContractOptions = SignSmartContractDataParameters & {
   private_key: string;
 };
 
-export default function generateSignedData(
+export const generateSignedData = (
   smartContractOptions: SmartContractOptions
-) {
+) => {
   if (!smartContractOptions) return {};
 
   const { private_key, ...rest } = smartContractOptions;
@@ -18,4 +18,4 @@ export default function generateSignedData(
     rest as SignSmartContractDataParameters,
     private_key
   );
-}
+};

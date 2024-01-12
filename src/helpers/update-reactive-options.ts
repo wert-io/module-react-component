@@ -7,7 +7,7 @@ import type {
   EventTypes,
 } from '@wert-io/widget-initializer/types';
 
-import generateListeners from './generate-listeners';
+import { generateListeners } from './generate-listeners';
 
 const reactiveThemeParameters = [
   'theme',
@@ -25,10 +25,10 @@ const reactiveThemeParameters = [
   'color_error',
 ] as const;
 export type ReactiveThemeParameters = (typeof reactiveThemeParameters)[number];
-export type ReactiveOptions = Pick<
+export type ReactiveOptions = Partial<Pick<
   Options,
   ReactiveThemeParameters | 'listeners'
->;
+>>;
 
 interface ThemeFunctionProps {
   widget?: InstanceType<typeof WertWidget>;
@@ -37,7 +37,7 @@ interface ThemeFunctionProps {
   widgetCallback?: (...args: any[]) => any;
 }
 
-export const updateTheme = ({
+const updateTheme = ({
   widget,
   options,
   prevOptions,
@@ -69,7 +69,7 @@ export const updateTheme = ({
   }
 };
 
-export const updateListeners = ({
+const updateListeners = ({
   widget,
   options,
   prevOptions,
