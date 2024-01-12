@@ -6,8 +6,8 @@ import type {
 
 import generateListeners from './helpers/generate-listeners';
 
-import generateSignedData from './generate-signed-data';
-import type { SmartContractOptions } from './generate-signed-data';
+import generateSignedData from './helpers/generate-signed-data';
+import type { SmartContractOptions } from './helpers/generate-signed-data';
 
 import { updateReactiveOptions } from './helpers/update-reactive-options';
 import type { ReactiveOptions, ReactiveThemeParameters } from './helpers/update-reactive-options';
