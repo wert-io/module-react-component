@@ -58,6 +58,14 @@ export const useWertWidget = (reactiveOptions: ReactiveOptions) => {
 
       setIsWidgetOpen(true);
     },
+    close: () => {
+      if (!isWidgetOpen) {
+        console.error('The Wert widget is already closed');
+        return;
+      }
+      wertWidget.current?.close();
+      setIsWidgetOpen(false);
+    },
     isWidgetOpen,
   };
 };
