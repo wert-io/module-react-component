@@ -17,7 +17,7 @@ npm install @wert-io/module-react-component
 ## Usage example
 
 ```
-import { useState } from 'React';
+import { useState } from 'react';
 import { useWertWidget } from '@wert-io/module-react-component';
 import type { GeneralOptions, ReactiveOptions } from '@wert-io/module-react-component';
 
@@ -29,7 +29,7 @@ export default function WertWidgetButton () {
     const [reactiveOptions, setReactiveOptions] = useState<ReactiveOptions>({
         theme: 'dark',
         listeners: {
-            'loaded': () => console.log(loaded),
+            'loaded': () => console.log('loaded'),
         },
     });
 
