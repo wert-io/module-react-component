@@ -11,18 +11,7 @@ import { generateListeners } from './generate-listeners';
 
 const reactiveThemeParameters = [
   'theme',
-  'color_background',
-  'color_buttons',
-  'color_buttons_text',
-  'color_secondary_buttons',
-  'color_secondary_buttons_text',
-  'color_main_text',
-  'color_secondary_text',
-  'color_icons',
-  'color_links',
-  'color_success',
-  'color_warning',
-  'color_error',
+  'brand_color'
 ] as const;
 export type ReactiveThemeParameters = (typeof reactiveThemeParameters)[number];
 export type ReactiveOptions = Partial<Pick<
@@ -53,10 +42,7 @@ const updateTheme = ({
           default:
             return {
               ...accum,
-              colors: {
-                ...accum.colors,
-                [parameter]: options?.[parameter],
-              },
+              [parameter]: options?.[parameter],
             };
         }
       }
