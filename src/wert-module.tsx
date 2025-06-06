@@ -6,21 +6,13 @@ import type {
 
 import { generateListeners } from './helpers/generate-listeners';
 
-import { generateSignedData } from './helpers/generate-signed-data';
-import type { SmartContractOptions } from './helpers/generate-signed-data';
-
 import { updateReactiveOptions } from './helpers/update-reactive-options';
 import type { ReactiveOptions, ReactiveThemeParameters } from './helpers/update-reactive-options';
 
-export type GeneralOptions = Omit<
+type StaticOptions = Omit<
   Options,
   ReactiveThemeParameters | 'listeners'
 >;
-
-export interface StaticOptions {
-  options: GeneralOptions;
-  smartContractOptions?: SmartContractOptions;
-}
 
 export const useWertWidget = (reactiveOptions: ReactiveOptions) => {
   const prevOptions = useRef<ReactiveOptions | undefined>(reactiveOptions);
@@ -37,7 +29,7 @@ export const useWertWidget = (reactiveOptions: ReactiveOptions) => {
   }, [reactiveOptions]);
 
   return {
-    open: ({ options, smartContractOptions }: StaticOptions) => {
+    open: (options: StaticOptions) => {
       if (isWidgetOpen) {
         console.error('The Wert widget is already open');
         return;
@@ -50,9 +42,6 @@ export const useWertWidget = (reactiveOptions: ReactiveOptions) => {
           listeners: reactiveOptions?.listeners,
           widgetCallback: () => setIsWidgetOpen(false)
         }),
-        ...(smartContractOptions
-          ? generateSignedData(smartContractOptions)
-          : {}),
       });
       wertWidget.current.open();
 
@@ -70,4 +59,4 @@ export const useWertWidget = (reactiveOptions: ReactiveOptions) => {
   };
 };
 
-export type { SmartContractOptions, ReactiveOptions };
+export type { StaticOptions, ReactiveOptions };
