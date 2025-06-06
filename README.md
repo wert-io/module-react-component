@@ -36,10 +36,7 @@ export default function WertWidgetButton () {
     const { open: openWertWidget, isWidgetOpen } = useWertWidget(reactiveOptions);
 
     return <button
-        onClick={() => {
-            openWertWidget(options);
-            console.log(isWidgetOpen);
-        }}
+        onClick={() => openWertWidget(options)}
     >
         Make A Purchase
     </button>
@@ -53,7 +50,7 @@ All **static** options should be passed directly to the `open` method. These inc
 
 ### Adding smart contract options
 
-Please generate the signature on your backend (you can use the [@wert-io/widget-sc-signer](https://www.npmjs.com/package/@wert-io/widget-sc-signer) package), and then pass the resulting options to the `open` method.
+Please generate the signature **on your backend** (you can use the [@wert-io/widget-sc-signer](https://www.npmjs.com/package/@wert-io/widget-sc-signer) package), and then pass the resulting options to the `open` method. Make sure you don't store your private key on the frontend.
 
 ```
 import { useWertWidget } from '@wert-io/module-react-component';
@@ -64,7 +61,7 @@ import type { StaticOptions } from '@wert-io/module-react-component';
 const generalOptions: StaticOptions = {
     partner_id: 'YOUR_PARTNER_ID',
 };
-const smartContractOptions: StaticOptions = {
+const smartContractOptions: Partial<StaticOptions> = {
     address: 'FALLBACK_ADDRESS',
     commodity: 'ETH',
     network: 'goerli',

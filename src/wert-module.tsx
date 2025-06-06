@@ -14,7 +14,7 @@ type StaticOptions = Omit<
   ReactiveThemeParameters | 'listeners'
 >;
 
-export const useWertWidget = (reactiveOptions: ReactiveOptions) => {
+export const useWertWidget = (reactiveOptions?: ReactiveOptions) => {
   const prevOptions = useRef<ReactiveOptions | undefined>(reactiveOptions);
   const wertWidget = useRef<InstanceType<typeof WertWidget> | undefined>();
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
