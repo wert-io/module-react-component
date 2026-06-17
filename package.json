@@ -1,6 +1,6 @@
 {
   "name": "@wert-io/module-react-component",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "WertModule React component",
   "author": "@wert-io",
   "main": "dist/wert-module.js",
