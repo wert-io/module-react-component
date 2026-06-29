@@ -7,7 +7,7 @@
   "types": "dist/wert-module.d.ts",
   "license": "ISC",
   "dependencies": {
-    "@wert-io/widget-initializer": "7.0.3"
+    "@wert-io/widget-initializer": "7.0.5"
   },
   "devDependencies": {
     "@types/react": "18.0.9",
@@ -30,7 +30,8 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "start": "rollup -c -w"
+    "start": "rollup -c -w",
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist"
